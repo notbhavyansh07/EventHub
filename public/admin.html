@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard | EventHub</title>
+  <meta name="description" content="Manage campus events, track registrations, and view attendees on EventHub.">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <nav aria-label="Main navigation">
+      <a class="logo" href="/">
+        <span class="logo-badge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </span>
+        EventHub Admin
+      </a>
+      <span id="nav-links"></span>
+    </nav>
+  </header>
+
+  <main>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+      <div>
+        <h1 style="font-size: 2rem; margin-bottom: 0.35rem;">Campus Event Management</h1>
+        <p style="color: var(--ink-secondary); font-size: 0.95rem;">Monitor real-time participation, publish upcoming events, and oversee registrations.</p>
+      </div>
+      <div style="display: flex; gap: 0.6rem;">
+        <a href="/" class="btn sec" style="gap: 0.4rem;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          Public View
+        </a>
+      </div>
+    </div>
+
+    <div id="msg" class="msg" role="alert"></div>
+
+    <!-- Summary KPI Statistics -->
+    <section id="stats" class="stats" aria-label="Summary statistics">
+      <div class="stat"><b>—</b><span>Total Events</span></div>
+      <div class="stat"><b>—</b><span>Upcoming</span></div>
+      <div class="stat"><b>—</b><span>Students</span></div>
+      <div class="stat"><b>—</b><span>Registrations</span></div>
+    </section>
+
+    <!-- Create / Edit Event Panel -->
+    <section class="panel">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 style="margin: 0; font-size: 1.25rem;">Create / Edit Campus Event</h2>
+        <span class="badge" style="background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3);">Admin Action</span>
+      </div>
+
+      <form id="form">
+        <input type="hidden" id="event_id">
+        <div class="two">
+          <div>
+            <label for="title">Event Title</label>
+            <input id="title" placeholder="e.g. AI & Robotics Hackathon 2026" required minlength="3" maxlength="150">
+          </div>
+          <div>
+            <label for="venue">Venue / Location</label>
+            <input id="venue" placeholder="e.g. Auditorium Hall B" required maxlength="150">
+          </div>
+          <div>
+            <label for="category">Category</label>
+            <select id="category"></select>
+          </div>
+          <div>
+            <label for="capacity">Maximum Seat Capacity</label>
+            <input id="capacity" type="number" min="1" max="10000" placeholder="e.g. 100" required>
+          </div>
+          <div style="grid-column: 1 / -1;">
+            <label for="event_date">Event Date &amp; Time</label>
+            <input id="event_date" type="datetime-local" required>
+          </div>
+        </div>
+
+        <label for="description">Event Description</label>
+        <textarea id="description" rows="3" placeholder="Provide event agenda, prerequisites, and instructions for students..."></textarea>
+
+        <p style="margin-top: 1.25rem; display: flex; gap: 0.75rem;">
+          <button id="save" class="btn" type="submit">Create Event</button>
+          <button id="clear" class="btn sec" type="button">Reset Form</button>
+        </p>
+      </form>
+    </section>
+
+    <!-- Registered Attendees Inspector Panel -->
+    <section class="panel">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+        <h2 style="margin: 0; font-size: 1.25rem;">Registered Attendees</h2>
+        <span style="font-size: 0.85rem; color: var(--muted);">Click "Attendees" on any event below</span>
+      </div>
+      <ul id="att-list">
+        <li style="color: var(--muted); text-align: center; padding: 1.5rem 0;">No event selected yet. Click "Attendees" on an event below to load participant list.</li>
+      </ul>
+    </section>
+
+    <!-- All Events Management Table -->
+    <div style="margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+      <h2 style="font-size: 1.25rem; margin: 0;">All Scheduled Events</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Event Name</th>
+            <th>Category</th>
+            <th>Date &amp; Time</th>
+            <th>Attendance</th>
+            <th style="text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+          <tr><td colspan="5" style="text-align: center; color: var(--muted); padding: 2.5rem;">Loading events table...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    EventHub &copy; 2026 &middot; Web Development Minor Project &middot; Bhavyansh Salvi (25CS003702) &middot; SPSU
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

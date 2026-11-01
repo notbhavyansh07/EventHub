@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create an Account | EventHub</title>
+  <meta name="description" content="Sign up for an EventHub account to join workshops, hackathons, and campus activities.">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <nav aria-label="Main navigation">
+      <a class="logo" href="/">
+        <span class="logo-badge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </span>
+        EventHub
+      </a>
+      <span id="nav-links"></span>
+    </nav>
+  </header>
+
+  <main>
+    <section class="form-box">
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <span class="logo-badge" style="width: 44px; height: 44px; border-radius: 12px; margin-bottom: 0.75rem;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="8.5" cy="7" r="4"></circle>
+            <line x1="20" y1="8" x2="20" y2="14"></line>
+            <line x1="23" y1="11" x2="17" y2="11"></line>
+          </svg>
+        </span>
+      </div>
+      <h1>Create Account</h1>
+      <p class="subtitle">Join thousands of students registering for college workshops, competitions, and talks.</p>
+
+      <form id="form" novalidate>
+        <div>
+          <label for="name">Full Name</label>
+          <input id="name" type="text" placeholder="e.g. Alex Johnson" required autocomplete="name">
+        </div>
+        <div>
+          <label for="email">College Email</label>
+          <input id="email" type="email" placeholder="alex@eventhub.com" required autocomplete="email">
+        </div>
+        <div>
+          <label for="password">Password (min. 8 characters, letters &amp; numbers)</label>
+          <input id="password" type="password" placeholder="••••••••" required autocomplete="new-password">
+        </div>
+        <div>
+          <label for="confirm">Confirm Password</label>
+          <input id="confirm" type="password" placeholder="••••••••" required autocomplete="new-password">
+        </div>
+
+        <div id="msg" class="msg" role="alert"></div>
+        <button class="btn" type="submit">Complete Sign Up</button>
+      </form>
+
+      <p>Already have an account? <a href="/login.html">Log in here</a></p>
+    </section>
+  </main>
+
+  <footer>
+    EventHub &copy; 2026 &middot; Web Development Minor Project &middot; Bhavyansh Salvi (25CS003702) &middot; SPSU
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/signup.js"></script>
+</body>
+</html>

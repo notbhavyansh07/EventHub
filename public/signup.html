@@ -28,42 +28,32 @@
 
   <main>
     <section class="form-box">
-      <div style="text-align: center; margin-bottom: 1.25rem;">
-        <span class="logo-badge" style="width: 44px; height: 44px; border-radius: 12px; margin-bottom: 0.75rem;">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="8.5" cy="7" r="4"></circle>
-            <line x1="20" y1="8" x2="20" y2="14"></line>
-            <line x1="23" y1="11" x2="17" y2="11"></line>
-          </svg>
-        </span>
-      </div>
-      <h1>Create Account</h1>
-      <p class="subtitle">Join thousands of students registering for college workshops, competitions, and talks.</p>
+      <h1>Create account</h1>
+      <p class="subtitle">Register to reserve your seat for campus workshops and hackathons.</p>
 
       <form id="form" novalidate>
         <div>
-          <label for="name">Full Name</label>
-          <input id="name" type="text" placeholder="e.g. Alex Johnson" required autocomplete="name">
+          <label for="name">Full name</label>
+          <input id="name" type="text" placeholder="Alex Johnson" required autocomplete="name">
         </div>
         <div>
-          <label for="email">College Email</label>
+          <label for="email">College email</label>
           <input id="email" type="email" placeholder="alex@eventhub.com" required autocomplete="email">
         </div>
         <div>
-          <label for="password">Password (min. 8 characters, letters &amp; numbers)</label>
+          <label for="password">Password (minimum 8 characters, with a number)</label>
           <input id="password" type="password" placeholder="••••••••" required autocomplete="new-password">
         </div>
         <div>
-          <label for="confirm">Confirm Password</label>
+          <label for="confirm">Confirm password</label>
           <input id="confirm" type="password" placeholder="••••••••" required autocomplete="new-password">
         </div>
 
         <div id="msg" class="msg" role="alert"></div>
-        <button class="btn" type="submit">Complete Sign Up</button>
+        <button class="btn" type="submit">Create account</button>
       </form>
 
-      <p>Already have an account? <a href="/login.html">Log in here</a></p>
+      <p>Already have an account? <a href="/login.html">Log in</a></p>
     </section>
   </main>
 

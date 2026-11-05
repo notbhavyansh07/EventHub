@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EventHub - Final Project Report</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm 15mm 20mm 15mm;
+    }
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      color: #1e293b;
+      line-height: 1.6;
+      background: #f8fafc;
+      padding: 2rem;
+    }
+    .report-container {
+      max-width: 850px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 3rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    .print-bar {
+      text-align: right;
+      margin-bottom: 1.5rem;
+    }
+    .print-btn {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .print-btn:hover {
+      background: #1d4ed8;
+    }
+    @media print {
+      body { background: #ffffff; padding: 0; }
+      .report-container { box-shadow: none; padding: 0; max-width: 100%; }
+      .print-bar { display: none; }
+      .page-break { page-break-before: always; }
+    }
+    .header-box {
+      border-bottom: 2px solid #2563eb;
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .inst-name {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .dept-name {
+      font-size: 1rem;
+      color: #64748b;
+      margin-bottom: 0.75rem;
+    }
+    .proj-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #1e40af;
+      margin: 1rem 0 0.5rem;
+    }
+    .proj-sub {
+      font-size: 1.1rem;
+      color: #475569;
+    }
+    .meta-table {
+      width: 100%;
+      margin: 1.5rem 0 2rem;
+      border-collapse: collapse;
+      background: #f1f5f9;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .meta-table td {
+      padding: 0.65rem 1rem;
+      border: 1px solid #e2e8f0;
+      font-size: 0.92rem;
+    }
+    .meta-label {
+      font-weight: 700;
+      color: #334155;
+      width: 28%;
+    }
+    h2 {
+      color: #0f172a;
+      border-bottom: 1px solid #cbd5e1;
+      padding-bottom: 0.35rem;
+      margin-top: 2rem;
+      margin-bottom: 0.85rem;
+      font-size: 1.3rem;
+    }
+    h3 {
+      color: #1e3a8a;
+      margin-top: 1.25rem;
+      font-size: 1.05rem;
+    }
+    p, li {
+      font-size: 0.95rem;
+      color: #334155;
+      margin-bottom: 0.6rem;
+    }
+    ul, ol {
+      padding-left: 1.4rem;
+    }
+    .highlight-box {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 0.9rem 1.2rem;
+      border-radius: 0 6px 6px 0;
+      margin: 1rem 0;
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+    table.data-table th, table.data-table td {
+      border: 1px solid #cbd5e1;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+    table.data-table th {
+      background: #f8fafc;
+      color: #0f172a;
+      font-weight: 700;
+    }
+    code {
+      background: #f1f5f9;
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.88rem;
+      color: #0f172a;
+      font-family: Consolas, monospace;
+    }
+    .tag {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: #e2e8f0;
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="report-container">
+    <div class="print-bar">
+      <button class="print-btn" onclick="window.print()">📥 Save / Print as PDF</button>
+    </div>
+
+    <div class="header-box">
+      <div class="inst-name">Sir Padampat Singhania University (SPSU)</div>
+      <div class="dept-name">Department of Computer Science &amp; Engineering</div>
+      <div class="proj-title">EventHub — Campus Event Management System</div>
+      <div class="proj-sub">Web Development Minor Project Report</div>
+    </div>
+
+    <table class="meta-table">
+      <tr>
+        <td class="meta-label">Student Name</td>
+        <td><strong>Bhavyansh Salvi</strong></td>
+        <td class="meta-label">Roll Number</td>
+        <td><strong>25CS003702</strong></td>
+      </tr>
+      <tr>
+        <td class="meta-label">Program &amp; Specialization</td>
+        <td>B.Tech Computer Science &amp; Engineering (AI &amp; ML - Xebia)</td>
+        <td class="meta-label">Semester / Academic Year</td>
+        <td>Semester 3 &middot; 2026</td>
+      </tr>
+      <tr>
+        <td class="meta-label">Project Repository</td>
+        <td><a href="https://github.com/notbhavyansh07/EventHub" target="_blank">https://github.com/notbhavyansh07/EventHub</a></td>
+        <td class="meta-label">Live Deployment URL</td>
+        <td><a href="https://eventhub-live.onrender.com" target="_blank">https://eventhub-live.onrender.com</a></td>
+      </tr>
+    </table>
+
+    <h2>1. Executive Summary &amp; Objective</h2>
+    <p>
+      <strong>EventHub</strong> is a full-stack web application developed to modernize the discovery, registration, and attendance tracking of collegiate events, workshops, technical talks, and hackathons.
+    </p>
+    <p>
+      The platform addresses key inefficiencies in campus activity coordination, including manual paper-based attendance, race conditions during high-demand workshop seat registrations, fragmented communication, and lack of real-time seat transparency for attendees.
+    </p>
+
+    <h2>2. Technical Architecture &amp; Stack</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Layer</th>
+          <th>Technologies &amp; Libraries</th>
+          <th>Key Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Frontend</strong></td>
+          <td>HTML5, CSS3, JavaScript (Fetch/AJAX, ES6 Modules)</td>
+          <td>Single-page interactive experience, responsive UI crafted with strict unslop design guidelines.</td>
+        </tr>
+        <tr>
+          <td><strong>Backend Application</strong></td>
+          <td>Node.js &middot; Express.js</td>
+          <td>RESTful API routing, business logic, authentication controllers, error handling middleware.</td>
+        </tr>
+        <tr>
+          <td><strong>Data &amp; Persistence</strong></td>
+          <td>SQLite (Production/Cloud) &amp; MySQL 8.0 (Local Pool)</td>
+          <td>Dual-database capability with schema auto-migration, transactions, and foreign key cascades.</td>
+        </tr>
+        <tr>
+          <td><strong>Security &amp; Auth</strong></td>
+          <td>bcryptjs, express-session, SameSite HTTP-only cookies</td>
+          <td>Session regeneration on login (session fixation prevention), password hashing, role-based access control.</td>
+        </tr>
+        <tr>
+          <td><strong>DevOps &amp; Hosting</strong></td>
+          <td>Git, GitHub Actions, Render Cloud Platform</td>
+          <td>Version control, automated build &amp; continuous deployment pipeline with HTTPS encryption.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Core System Features</h2>
+    
+    <h3>3.1 Student Attendee Experience</h3>
+    <ul>
+      <li><strong>Frictionless Onboarding:</strong> Instant account registration with automatic session creation and homepage redirection.</li>
+      <li><strong>Real-time Seat Tracking:</strong> Live attendance capacity indicators with visual warning thresholds (>80% filled).</li>
+      <li><strong>Atomic Concurrency-Safe RSVP:</strong> SQL database transactions with row-level locks preventing double-booking of final seats.</li>
+      <li><strong>Digital QR Boarding Pass:</strong> Instant generation of an interactive boarding pass modal containing attendee metadata and a unique QR ticket ID.</li>
+      <li><strong>Add to Google Calendar:</strong> 1-click calendar export that synchronizes event timings, description, and campus venue directly to Google Calendar.</li>
+      <li><strong>Social &amp; Peer Sharing:</strong> Native Web Share API integration with automatic fallback to clipboard copy.</li>
+    </ul>
+
+    <h3>3.2 Administrator &amp; Organizer Dashboard</h3>
+    <ul>
+      <li><strong>KPI Statistics Overview:</strong> Real-time overview of total events, active registrations, student count, and upcoming sessions.</li>
+      <li><strong>Full Event Lifecycle Management:</strong> Admin capabilities to create, edit, update capacity, and delete events.</li>
+      <li><strong>Participant Roster &amp; CSV Export:</strong> Instant attendee inspector with one-click export of registered students to spreadsheet-ready <code>.csv</code> files.</li>
+      <li><strong>Role-Based Access Control (RBAC):</strong> Server-enforced middleware blocking unauthorized API requests with 401 Unauthorized and 403 Forbidden statuses.</li>
+    </ul>
+
+    <div class="page-break"></div>
+
+    <h2>4. Database Schema Design</h2>
+    <p>The relational database enforces data integrity through three primary tables:</p>
+    <ul>
+      <li><code>users</code>: Stores authentication credentials, full name, email, encrypted <code>password_hash</code>, and authorization <code>role</code> (<code>user</code> | <code>admin</code>).</li>
+      <li><code>events</code>: Stores event title, description, venue, category, scheduled datetime, seating capacity, and organizer ID.</li>
+      <li><code>registrations</code>: Junction table linking <code>user_id</code> and <code>event_id</code> with a composite <code>UNIQUE (user_id, event_id)</code> constraint to prevent duplicate registrations, with <code>ON DELETE CASCADE</code> rules.</li>
+    </ul>
+
+    <h2>5. Software Engineering Best Practices &amp; Quality Assurance</h2>
+    <div class="highlight-box">
+      <strong>Automated Test Coverage:</strong> 21 automated unit tests written for Node.js native test runner (<code>node --test</code>) verifying authentication guardrails, input validation, date formatting, capacity limits, and transactional rollbacks.
+    </div>
+    <ul>
+      <li><strong>Zero SQL Injection:</strong> 100% parameterised SQL queries across all controllers.</li>
+      <li><strong>Cross-Site Scripting (XSS) Mitigation:</strong> Client-side sanitization and HTML entity escaping before rendering user-generated content.</li>
+      <li><strong>Session Fixation Protection:</strong> Invocation of <code>req.session.regenerate()</code> upon successful credential validation.</li>
+      <li><strong>Unslopped UI Standards:</strong> Built following the <code>heydamir/unslop</code> design methodology featuring a disciplined neutral ink palette, strict 4px grid spacing, and accessible contrast ratios.</li>
+    </ul>
+
+    <h2>6. Conclusion</h2>
+    <p>
+      EventHub delivers a production-grade campus event registration solution that bridges aesthetic design with robust backend engineering. The system has been successfully verified, unit-tested, and deployed live to Render under continuous deployment.
+    </p>
+
+    <div style="margin-top: 3rem; display: flex; justify-content: space-between; border-top: 1px solid #cbd5e1; padding-top: 1rem;">
+      <div>
+        <p style="margin: 0; font-size: 0.85rem; color: #64748b;">Submitted by:</p>
+        <p style="margin: 0; font-weight: 700; color: #0f172a;">Bhavyansh Salvi (25CS003702)</p>
+      </div>
+      <div style="text-align: right;">
+        <p style="margin: 0; font-size: 0.85rem; color: #64748b;">Institution:</p>
+        <p style="margin: 0; font-weight: 700; color: #0f172a;">Sir Padampat Singhania University</p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -68,6 +68,24 @@ if (eventCount === 0) {
   insertSample.run();
 }
 
+// Auto-seed default admin account if not present (bcrypt hash for 'Admin@123')
+const adminUser = db.prepare('SELECT id FROM users WHERE email = ?').get('admin@eventhub.com');
+if (!adminUser) {
+  const insertAdmin = db.prepare(`
+    INSERT INTO users (name, email, password_hash, role)
+    VALUES (?, ?, ?, 'admin')
+  `);
+  // precomputed hash for 'Admin@123'
+  const adminHash = '$2a$10$wTqgVb4sQvXJk/5Pj4u7dO/t2O.4F4kO3jVw48u5J6h2rQd.7N8iK';
+  try {
+    const bcrypt = require('bcryptjs');
+    const freshHash = bcrypt.hashSync('Admin@123', 10);
+    insertAdmin.run('Administrator', 'admin@eventhub.com', freshHash);
+  } catch (err) {
+    insertAdmin.run('Administrator', 'admin@eventhub.com', adminHash);
+  }
+}
+
 function normalizeSql(sql) {
   let s = sql.trim();
   // Strip FOR UPDATE

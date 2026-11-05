@@ -10,7 +10,7 @@ ready.then(() => {
     try {
       const r = await api('/api/auth/register', 'POST', { name: $('#name').value, email: $('#email').value, password: pw });
       showMsg(msg, r.message, true);
-      setTimeout(() => location.href = '/login.html', 1200);
+      setTimeout(() => location.href = '/', 900);
     } catch (err) { showMsg(msg, err.message); }
   });
 });

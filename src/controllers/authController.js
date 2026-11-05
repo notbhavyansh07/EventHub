@@ -4,16 +4,24 @@ const HttpError = require('../utils/HttpError');
 const asyncHandler = require('../utils/asyncHandler');
 const { validateSignup } = require('../utils/validators');
 
-exports.register = asyncHandler(async (req, res) => {
+exports.register = asyncHandler(async (req, res, next) => {
   const { name, email, password } = validateSignup(req.body);
   const hash = await bcrypt.hash(password, 10);          // never store plain passwords
+  let insertId;
   try {
-    await pool.query('INSERT INTO users (name, email, password_hash) VALUES (?,?,?)', [name, email, hash]);
+    const [result] = await pool.query('INSERT INTO users (name, email, password_hash) VALUES (?,?,?)', [name, email, hash]);
+    insertId = result.insertId;
   } catch (e) {
     if (e.code === 'ER_DUP_ENTRY') throw new HttpError(409, 'This email is already registered');
     throw e;
   }
-  res.status(201).json({ message: 'Account created. You can log in now.' });
+  
+  // Auto-login upon registration and establish session
+  req.session.regenerate(err => {
+    if (err) return next(err);
+    req.session.user = { id: insertId, name, email, role: 'user' };
+    res.status(201).json({ message: 'Account created! Welcome to EventHub.', user: req.session.user });
+  });
 });
 
 exports.login = asyncHandler(async (req, res, next) => {

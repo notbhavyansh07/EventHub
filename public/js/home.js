@@ -3,11 +3,13 @@ ready.then(() => {
   const list = $('#events'), msg = $('#msg'), search = $('#search'), cat = $('#category');
   cat.innerHTML = '<option value="">All Categories</option>' + CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
 
+  let currentEvents = [];
+
   async function load() {
     try {
       const qs = new URLSearchParams({ q: search.value, category: cat.value });
-      const events = await api('/api/events?' + qs);
-      list.innerHTML = events.length ? events.map(card).join('') : `
+      currentEvents = await api('/api/events?' + qs);
+      list.innerHTML = currentEvents.length ? currentEvents.map(card).join('') : `
         <div class="empty-state" style="grid-column: 1 / -1;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
@@ -23,7 +25,16 @@ ready.then(() => {
     const full = e.registered >= e.capacity;
     let btn;
     if (e.is_past) btn = '<button class="btn" disabled>Event ended</button>';
-    else if (e.is_registered) btn = `<button class="btn sec" data-cancel="${e.id}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Cancel registration</button>`;
+    else if (e.is_registered) btn = `
+      <div style="display: flex; gap: 0.4rem; width: 100%;">
+        <button class="btn" data-pass="${e.id}" style="flex: 1; padding: 0.55rem 0.75rem; font-size: 0.85rem; background: linear-gradient(135deg, #10b981, #059669);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+          View Pass
+        </button>
+        <button class="btn sec" data-cancel="${e.id}" title="Cancel registration" style="padding: 0.55rem 0.75rem; font-size: 0.85rem; color: #f87171;">
+          Cancel
+        </button>
+      </div>`;
     else if (full) btn = '<button class="btn" disabled>Event full</button>';
     else btn = `<button class="btn" data-reg="${e.id}">Register now</button>`;
 
@@ -34,7 +45,12 @@ ready.then(() => {
     return `<article class="card">
       <div class="card-top">
         <span class="badge ${full ? 'full' : e.is_registered ? 'ok' : ''}">${badge}</span>
-        <span class="badge cat">${esc(e.category)}</span>
+        <div style="display: flex; align-items: center; gap: 0.4rem;">
+          <span class="badge cat">${esc(e.category)}</span>
+          <button class="btn-icon" data-share="${e.id}" title="Share this event" aria-label="Share event">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+          </button>
+        </div>
       </div>
       <h2>${esc(e.title)}</h2>
       <div class="meta">
@@ -64,12 +80,29 @@ ready.then(() => {
   list.addEventListener('click', async ev => {
     const btn = ev.target.closest('button');
     if (!btn) return;
+
+    if (btn.dataset.share) {
+      const e = currentEvents.find(x => x.id == btn.dataset.share);
+      if (e) shareEvent(e);
+      return;
+    }
+
+    if (btn.dataset.pass) {
+      const e = currentEvents.find(x => x.id == btn.dataset.pass);
+      if (e) showTicketModal(e);
+      return;
+    }
+
     const reg = btn.dataset.reg, can = btn.dataset.cancel;
     if (!reg && !can) return;
     if (!currentUser) { location.href = '/login.html'; return; }
     try {
       const r = await api(`/api/events/${reg || can}/register`, reg ? 'POST' : 'DELETE');
       showMsg(msg, r.message, true);
+      if (reg) {
+        const e = currentEvents.find(x => x.id == reg);
+        if (e) showTicketModal({ ...e, is_registered: true });
+      }
       load();
     } catch (e) { showMsg(msg, e.message); load(); }
   });

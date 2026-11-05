@@ -1,10 +1,37 @@
-// Admin panel: dashboard numbers, event CRUD, attendee list.
+// Admin panel: dashboard numbers, event CRUD, attendee list, CSV export.
 ready.then(async () => {
   if (!currentUser) return location.href = '/login.html';
   if (currentUser.role !== 'admin') return location.href = '/';
   const form = $('#form'), msg = $('#msg'), rows = $('#rows');
   let events = [];
   $('#category').innerHTML = CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
+
+  // CSV Exporter for Attendee rosters
+  function downloadCsv(attendees, eventTitle) {
+    if (!attendees.length) {
+      alert('No attendees to export for this event.');
+      return;
+    }
+    const headers = ['Name', 'Email', 'Registered At'];
+    const csvRows = [headers.join(',')];
+    attendees.forEach(a => {
+      const row = [
+        `"${(a.name || '').replace(/"/g, '""')}"`,
+        `"${(a.email || '').replace(/"/g, '""')}"`,
+        `"${(a.registered_at || '').replace(/"/g, '""')}"`
+      ];
+      csvRows.push(row.join(','));
+    });
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    const sanitizedTitle = eventTitle.toLowerCase().replace(/[^a-z0-9]/gi, '_');
+    link.setAttribute('download', `${sanitizedTitle}_attendees.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 
   async function load() {
     try {
@@ -37,6 +64,10 @@ ready.then(async () => {
           <td style="text-align: right;">
             <div style="display: inline-flex; gap: 0.4rem; justify-content: flex-end;">
               <button class="btn sec" data-att="${e.id}" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Attendees</button>
+              <button class="btn sec" data-csv="${e.id}" title="Download CSV" style="padding: 0.35rem 0.65rem; font-size: 0.82rem;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                CSV
+              </button>
               <button class="btn sec" data-edit="${e.id}" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Edit</button>
               <button class="btn danger" data-del="${e.id}" style="padding: 0.35rem 0.75rem; font-size: 0.82rem;">Delete</button>
             </div>
@@ -96,7 +127,10 @@ ready.then(async () => {
         const list = await api(`/api/events/${t.dataset.att}/attendees`);
         const e = events.find(x => x.id == t.dataset.att);
         $('#att-list').innerHTML = list.length
-          ? `<li style="background: rgba(99, 102, 241, 0.1); border-color: rgba(99, 102, 241, 0.3); font-weight: 600;">Showing ${list.length} attendees for "${esc(e ? e.title : 'Event')}":</li>` +
+          ? `<li style="background: rgba(99, 102, 241, 0.1); border-color: rgba(99, 102, 241, 0.3); font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
+              <span>Showing ${list.length} attendees for "${esc(e ? e.title : 'Event')}":</span>
+              <button class="btn sec" id="export-att-btn" style="padding: 0.3rem 0.65rem; font-size: 0.75rem;">Export CSV</button>
+            </li>` +
             list.map(a => `
               <li style="display: flex; justify-content: space-between; align-items: center;">
                 <span><strong>${esc(a.name)}</strong> (${esc(a.email)})</span>
@@ -104,6 +138,15 @@ ready.then(async () => {
               </li>
             `).join('')
           : `<li style="text-align: center; color: var(--muted); padding: 1.5rem 0;">No students have registered for this event yet.</li>`;
+
+        const exportBtn = $('#export-att-btn');
+        if (exportBtn) {
+          exportBtn.onclick = () => downloadCsv(list, e ? e.title : 'event');
+        }
+      } else if (t.dataset.csv) {
+        const list = await api(`/api/events/${t.dataset.csv}/attendees`);
+        const e = events.find(x => x.id == t.dataset.csv);
+        downloadCsv(list, e ? e.title : 'event');
       }
     } catch (err) { showMsg(msg, err.message); }
   });

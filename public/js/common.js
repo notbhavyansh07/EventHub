@@ -54,3 +54,165 @@ async function renderNav() {
 
 // Every page script waits for this before using currentUser.
 const ready = renderNav();
+
+// --- Modern Feature Utilities ---
+
+// Toast notification popup
+function showToast(text) {
+  let toast = $('#toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast';
+    toast.className = 'toast';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>${esc(text)}</span>`;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// Generate Google Calendar Link
+function getGoogleCalendarUrl(e) {
+  const d = new Date(e.event_date.replace(' ', 'T'));
+  const pad = n => String(n).padStart(2, '0');
+  const formatUtc = date => {
+    return date.getUTCFullYear() +
+      pad(date.getUTCMonth() + 1) +
+      pad(date.getUTCDate()) + 'T' +
+      pad(date.getUTCHours()) +
+      pad(date.getUTCMinutes()) + '00Z';
+  };
+  const start = formatUtc(d);
+  const end = formatUtc(new Date(d.getTime() + 2 * 60 * 60 * 1000)); // default 2 hours duration
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: e.title,
+    details: `${e.description || 'Campus Event on EventHub'}\n\nCategory: ${e.category}`,
+    location: e.venue || 'Campus',
+    dates: `${start}/${end}`
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+// Share Event to Clipboard / Social
+async function shareEvent(e) {
+  const shareData = {
+    title: e.title,
+    text: `Check out ${e.title} happening at ${e.venue} on ${fmtDate(e.event_date)}!`,
+    url: window.location.origin + '/?q=' + encodeURIComponent(e.title)
+  };
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+      return;
+    } catch (err) {
+      if (err.name !== 'AbortError') console.error(err);
+    }
+  }
+  // Fallback to clipboard
+  try {
+    await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+    showToast('Event details copied to clipboard!');
+  } catch (err) {
+    showToast('Link copied!');
+  }
+}
+
+// Show Digital Ticket Pass Modal with QR
+function showTicketModal(e, attendeeName = '') {
+  let modal = $('#ticket-modal');
+  if (modal) modal.remove();
+
+  const passCode = `EH-${e.id}-${Math.abs((attendeeName || 'GUEST').split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0))|0, 0)) % 100000}`;
+
+  modal = document.createElement('div');
+  modal.id = 'ticket-modal';
+  modal.className = 'modal-backdrop';
+  modal.innerHTML = `
+    <div class="ticket-card" role="dialog" aria-modal="true" aria-labelledby="t-title">
+      <div class="ticket-header">
+        <div>
+          <span class="ticket-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Verified Pass
+          </span>
+          <div style="font-size: 0.8rem; color: var(--muted); margin-top: 0.35rem;">Pass ID: <strong>#${esc(passCode)}</strong></div>
+        </div>
+        <button class="ticket-close" id="close-ticket" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="ticket-body">
+        <h3 class="ticket-title" id="t-title">${esc(e.title)}</h3>
+        <span class="badge cat">${esc(e.category)}</span>
+
+        <div class="ticket-details">
+          <div class="ticket-field">
+            <span>Attendee</span>
+            <strong>${esc(attendeeName || (currentUser ? currentUser.name : 'Student'))}</strong>
+          </div>
+          <div class="ticket-field">
+            <span>Venue</span>
+            <strong>${esc(e.venue)}</strong>
+          </div>
+          <div class="ticket-field" style="grid-column: 1 / -1;">
+            <span>Date &amp; Time</span>
+            <strong>${esc(fmtDate(e.event_date))}</strong>
+          </div>
+        </div>
+
+        <div class="ticket-qr-wrap">
+          <!-- Scalable SVG QR code representation -->
+          <svg width="150" height="150" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" fill="#ffffff"/>
+            <!-- Top-Left Target -->
+            <rect x="8" y="8" width="28" height="28" rx="4" fill="#090d16"/>
+            <rect x="14" y="14" width="16" height="16" rx="2" fill="#ffffff"/>
+            <rect x="18" y="18" width="8" height="8" rx="1" fill="#090d16"/>
+            <!-- Top-Right Target -->
+            <rect x="64" y="8" width="28" height="28" rx="4" fill="#090d16"/>
+            <rect x="70" y="14" width="16" height="16" rx="2" fill="#ffffff"/>
+            <rect x="74" y="18" width="8" height="8" rx="1" fill="#090d16"/>
+            <!-- Bottom-Left Target -->
+            <rect x="8" y="64" width="28" height="28" rx="4" fill="#090d16"/>
+            <rect x="14" y="70" width="16" height="16" rx="2" fill="#ffffff"/>
+            <rect x="18" y="74" width="8" height="8" rx="1" fill="#090d16"/>
+            <!-- Data Grid Simulation -->
+            <rect x="42" y="12" width="6" height="6" fill="#090d16"/>
+            <rect x="52" y="12" width="6" height="6" fill="#090d16"/>
+            <rect x="42" y="24" width="6" height="12" fill="#090d16"/>
+            <rect x="52" y="30" width="6" height="6" fill="#090d16"/>
+            <rect x="12" y="42" width="8" height="6" fill="#090d16"/>
+            <rect x="26" y="42" width="6" height="12" fill="#090d16"/>
+            <rect x="40" y="44" width="20" height="6" fill="#090d16"/>
+            <rect x="66" y="42" width="12" height="6" fill="#090d16"/>
+            <rect x="82" y="46" width="6" height="12" fill="#090d16"/>
+            <rect x="42" y="58" width="12" height="6" fill="#090d16"/>
+            <rect x="60" y="56" width="6" height="14" fill="#090d16"/>
+            <rect x="44" y="72" width="8" height="16" fill="#090d16"/>
+            <rect x="62" y="76" width="16" height="6" fill="#090d16"/>
+            <rect x="82" y="68" width="6" height="16" fill="#090d16"/>
+          </svg>
+          <div class="ticket-qr-hint">Scan at event desk for fast check-in</div>
+        </div>
+      </div>
+
+      <div class="ticket-footer">
+        <a href="${esc(getGoogleCalendarUrl(e))}" target="_blank" rel="noopener noreferrer" class="btn sec" style="font-size: 0.85rem; padding: 0.45rem 0.85rem;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+          Add to Calendar
+        </a>
+        <button class="btn" onclick="window.print()" style="font-size: 0.85rem; padding: 0.45rem 0.85rem;">
+          Print Pass
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  const close = () => modal.remove();
+  modal.querySelector('#close-ticket').onclick = close;
+  modal.onclick = ev => { if (ev.target === modal) close(); };
+}
